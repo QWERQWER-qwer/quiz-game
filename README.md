@@ -172,3 +172,5 @@ quiz-game/
 - **명령어별 역할**: `init`(저장소 생성) · `add`(변경을 스테이지에 올림) · `commit`(기록으로 확정) · `push`(원격에 올림) · `pull`(원격 변경 가져옴) · `checkout`(브랜치 이동/`-b`로 생성) · `clone`(원격을 통째로 복제) · `merge`(브랜치 합침).
 - **브랜치 생성·병합?** `git checkout -b feature/play`로 만들어 작업하고, `git checkout main` 후 `git merge --no-ff feature/play`로 합쳤다.
 - **clone·pull?** 저장소를 다른 폴더로 `clone`해 수정·`push`하고, 원본에서 `pull`로 가져와 반영을 확인했다.
+
+- clone/pull 실습: 저장소를 별도 폴더로 복제해 동작을 확인함.

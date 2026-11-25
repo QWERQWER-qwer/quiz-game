@@ -82,12 +82,37 @@ class QuizGame:
         self.quizzes = [Quiz.from_dict(d) for d in DEFAULT_QUIZZES]
         self.best_score = 0
 
+    def play(self):
+        if not self.quizzes:
+            print("등록된 퀴즈가 없습니다. 먼저 퀴즈를 추가하세요.\n")
+            return
+        print(f"\n퀴즈를 시작합니다! (총 {len(self.quizzes)}문제)\n")
+        correct = 0
+        for idx, quiz in enumerate(self.quizzes, 1):
+            print("-" * 40)
+            print(f"[문제 {idx}]")
+            quiz.show()
+            answer = read_int_in_range("정답 입력(1-4): ", 1, 4)
+            if quiz.is_correct(answer):
+                print("[O] 정답입니다!\n")
+                correct += 1
+            else:
+                print(f"[X] 오답입니다. 정답은 {quiz.answer}번.\n")
+        total = len(self.quizzes)
+        score = int(correct / total * 100)
+        print("=" * 40)
+        print(f"결과: {total}문제 중 {correct}문제 정답! ({score}점)")
+        if score > self.best_score:
+            self.best_score = score
+            print("새로운 최고 점수입니다!")
+        print("=" * 40 + "\n")
+
     def run(self):
         while True:
             print_menu()
             choice = read_int_in_range("선택: ", 1, 5)
             if choice == 1:
-                print("\n[퀴즈 풀기] 기능은 준비 중입니다.\n")
+                self.play()
             elif choice == 2:
                 print("\n[퀴즈 추가] 기능은 준비 중입니다.\n")
             elif choice == 3:

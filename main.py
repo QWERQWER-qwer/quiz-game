@@ -5,6 +5,21 @@ import os
 
 STATE_FILE = "state.json"
 
+DEFAULT_QUIZZES = [
+    {"question": "해적왕을 꿈꾸며 고무 몸을 가진 루피가 주인공인 애니메이션은?",
+     "choices": ["원피스", "나루토", "블리치", "페어리테일"], "answer": 1},
+    {"question": "닌자 세계에서 호카게를 꿈꾸는 소년이 주인공인 애니메이션은?",
+     "choices": ["블리치", "나루토", "원펀맨", "학원 묵시록"], "answer": 2},
+    {"question": "거인과 싸우는 인류를 그린, 엘런이 주인공인 애니메이션은?",
+     "choices": ["도쿄 구울", "진격의 거인", "강철의 연금술사", "데스노트"], "answer": 2},
+    {"question": "남녀의 몸이 뒤바뀌는 신카이 마코토 감독의 극장판 애니메이션은?",
+     "choices": ["너의 이름은.", "날씨의 아이", "목소리의 형태", "스즈메의 문단속"], "answer": 1},
+    {"question": "탄지로가 여동생을 되돌리려 도깨비와 싸우는 애니메이션은?",
+     "choices": ["주술회전", "귀멸의 칼날", "체인소맨", "도로헤도로"], "answer": 2},
+    {"question": "소년이 '데스노트'로 범죄자를 심판하는 이야기의 애니메이션은?",
+     "choices": ["코드 기어스", "데스노트", "사이코패스", "몬스터"], "answer": 2},
+]
+
 class Quiz:
     """개별 퀴즈 하나(문제·선택지·정답)를 표현한다."""
 
@@ -63,6 +78,10 @@ class QuizGame:
         self.quizzes = []
         self.best_score = 0
 
+    def load(self):
+        self.quizzes = [Quiz.from_dict(d) for d in DEFAULT_QUIZZES]
+        self.best_score = 0
+
     def run(self):
         while True:
             print_menu()
@@ -81,6 +100,7 @@ class QuizGame:
 
 if __name__ == "__main__":
     game = QuizGame()
+    game.load()
     try:
         game.run()
     except (KeyboardInterrupt, EOFError):

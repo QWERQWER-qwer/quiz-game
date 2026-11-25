@@ -5,6 +5,29 @@ import os
 
 STATE_FILE = "state.json"
 
+class Quiz:
+    """개별 퀴즈 하나(문제·선택지·정답)를 표현한다."""
+
+    def __init__(self, question, choices, answer):
+        self.question = question
+        self.choices = choices
+        self.answer = answer
+
+    def show(self):
+        print(self.question)
+        for i, choice in enumerate(self.choices, 1):
+            print(f"  {i}. {choice}")
+
+    def is_correct(self, user_input):
+        return user_input == self.answer
+
+    def to_dict(self):
+        return {"question": self.question, "choices": self.choices, "answer": self.answer}
+
+    @staticmethod
+    def from_dict(data):
+        return Quiz(data["question"], data["choices"], data["answer"])
+
 def read_int_in_range(prompt, low, high):
     """low~high 범위의 정수를 받을 때까지 반복 입력받는다.
     공백 제거 / 빈 입력 / 숫자 아님 / 범위 밖 -> 안내 후 재입력."""

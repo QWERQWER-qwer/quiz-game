@@ -79,8 +79,30 @@ class QuizGame:
         self.best_score = 0
 
     def load(self):
-        self.quizzes = [Quiz.from_dict(d) for d in DEFAULT_QUIZZES]
-        self.best_score = 0
+        if not os.path.exists(STATE_FILE):
+            self.quizzes = [Quiz.from_dict(d) for d in DEFAULT_QUIZZES]
+            self.best_score = 0
+            print("새 게임을 시작합니다. (기본 퀴즈 로드)")
+            return
+        try:
+            with open(STATE_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            self.quizzes = [Quiz.from_dict(d) for d in data["quizzes"]]
+            self.best_score = data.get("best_score", 0)
+            print(f"[저장 데이터 불러옴] 퀴즈 {len(self.quizzes)}개, 최고점수 {self.best_score}점")
+        except (json.JSONDecodeError, KeyError, OSError):
+            print("[!] 저장 파일이 손상되어 기본 퀴즈로 복구합니다.")
+            self.quizzes = [Quiz.from_dict(d) for d in DEFAULT_QUIZZES]
+            self.best_score = 0
+
+    def save(self):
+        data = {"quizzes": [q.to_dict() for q in self.quizzes],
+                "best_score": self.best_score}
+        try:
+            with open(STATE_FILE, "w", encoding="utf-8") as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
+        except OSError:
+            print("[!] 저장에 실패했습니다.")
 
     def play(self):
         if not self.quizzes:
@@ -106,6 +128,7 @@ class QuizGame:
             self.best_score = score
             print("새로운 최고 점수입니다!")
         print("=" * 40 + "\n")
+        self.save()
 
     def add_quiz(self):
         print("\n새로운 퀴즈를 추가합니다.")
@@ -123,6 +146,7 @@ class QuizGame:
         answer = read_int_in_range("정답 번호 (1-4): ", 1, 4)
         self.quizzes.append(Quiz(question, choices, answer))
         print("[O] 퀴즈가 추가되었습니다!\n")
+        self.save()
 
     def list_quizzes(self):
         if not self.quizzes:
@@ -154,6 +178,7 @@ class QuizGame:
                 self.show_score()
             elif choice == 5:
                 print("\n게임을 종료합니다. 안녕히 가세요!")
+                self.save()
                 break
 
 if __name__ == "__main__":
@@ -162,5 +187,6 @@ if __name__ == "__main__":
     try:
         game.run()
     except (KeyboardInterrupt, EOFError):
-        print("\n\n[!] 입력이 중단되었습니다. 안전하게 종료합니다.")
+        print("\n\n[!] 입력이 중단되었습니다. 저장 후 안전하게 종료합니다.")
+        game.save()
 
